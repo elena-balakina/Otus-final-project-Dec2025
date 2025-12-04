@@ -4,9 +4,9 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 }
 
-group = "com.hyperskill"
+group = "org.otus"
 version = "0.0.1-SNAPSHOT"
-description = "Final-Project-From-Scratch-Oct-2025"
+description = "Otus-final-project-Dec2025"
 
 java {
     toolchain {
