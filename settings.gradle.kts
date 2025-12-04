@@ -1,1 +1,1 @@
-rootProject.name = "Otus-final-project-Dec2026"
+rootProject.name = "Otus-final-project-Dec2025"
