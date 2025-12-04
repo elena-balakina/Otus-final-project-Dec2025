@@ -1,0 +1,1 @@
+rootProject.name = "Otus-final-project-Dec2026"
