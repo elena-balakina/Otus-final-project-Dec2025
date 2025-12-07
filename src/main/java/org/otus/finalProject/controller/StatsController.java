@@ -6,6 +6,7 @@ import org.otus.finalProject.dto.stats.PlayerStatResponse;
 import org.otus.finalProject.dto.stats.TeamStatResponse;
 import org.otus.finalProject.dto.stats.TopScorersStatResponse;
 import org.otus.finalProject.service.base.StatsService;
+import org.otus.finalProject.service.kafka.StatsKafkaProducer;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,26 +17,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatsController {
     private final StatsService service;
+    private final StatsKafkaProducer statsKafkaProducer;
 
     // GET /api/stats/teams/{id}?year=
     @GetMapping("/teams/{id}")
     public TeamStatResponse teamStats(@PathVariable Long id,
                                       @RequestParam(required = false) Integer year) {
-        return service.teamStats(id, year);
+        TeamStatResponse response = service.teamStats(id, year);
+        statsKafkaProducer.sendTeamStats(response);
+        return response;
     }
 
     // GET /api/stats/players/{id}?year=
     @GetMapping("/players/{id}")
     public PlayerStatResponse playerStats(@PathVariable Long id,
                                           @RequestParam(required = false) Integer year) {
-        return service.playerStats(id, year);
+        PlayerStatResponse response = service.playerStats(id, year);
+        statsKafkaProducer.sendPlayerStats(response);
+        return response;
     }
 
     // GET /api/stats/top-teams?year=&limit=
     @GetMapping("/top-teams")
     public List<TeamStatResponse> topTeams(@RequestParam(required = false) Integer year,
                                            @RequestParam(defaultValue = "10") Integer limit) {
-        return service.topTeams(year, limit);
+        List<TeamStatResponse> response = service.topTeams(year, limit);
+        statsKafkaProducer.sendTopTeams(response, year, limit);
+        return response;
     }
 
     // GET /api/stats/top-scorers?teamId=&year=&limit=
@@ -43,6 +51,8 @@ public class StatsController {
     public List<TopScorersStatResponse> topScorers(@RequestParam(required = false) Long teamId,
                                                    @RequestParam(required = false) Integer year,
                                                    @RequestParam(defaultValue = "10") Integer limit) {
-        return service.topScorers(teamId, year, limit);
+        List<TopScorersStatResponse> response = service.topScorers(teamId, year, limit);
+        statsKafkaProducer.sendTopScorers(response, teamId, year, limit);
+        return response;
     }
 }

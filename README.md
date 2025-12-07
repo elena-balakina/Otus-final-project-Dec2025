@@ -75,7 +75,7 @@ DELETE /api/goals/{id}
 ----
 Kafka
 -----
-statistics.teams.out
-statistics.top-teams.out
-statistics.players.out
-statistics.top-scores.out
+- statistics.teams.out
+- statistics.top-teams.out
+- statistics.players.out
+- statistics.top-scores.out
