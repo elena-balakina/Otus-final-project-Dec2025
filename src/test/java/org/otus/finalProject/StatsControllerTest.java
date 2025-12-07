@@ -12,6 +12,7 @@ import org.otus.finalProject.dto.stats.TopScorersStatResponse;
 import org.otus.finalProject.handler.NotFoundException;
 import org.otus.finalProject.handler.RestExceptionHandler;
 import org.otus.finalProject.service.base.StatsService;
+import org.otus.finalProject.service.kafka.StatsKafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,6 +41,9 @@ class StatsControllerTest {
     @MockBean
     StatsService statsService;
 
+    @MockBean
+    StatsKafkaProducer statsKafkaProducer;
+
     @Nested
     @DisplayName("GET /api/stats/teams/{id}")
     class TeamStats {
@@ -56,6 +60,8 @@ class StatsControllerTest {
                     .andExpect(jsonPath("$.year").value(2025))
                     .andExpect(jsonPath("$.wins").value(20))
                     .andExpect(jsonPath("$.losses").value(5));
+
+            Mockito.verify(statsKafkaProducer).sendTeamStats(response);
         }
 
         @Test
@@ -86,6 +92,8 @@ class StatsControllerTest {
                     .andExpect(jsonPath("$.matchesPlayed").value(25))
                     .andExpect(jsonPath("$.goals").value(12))
                     .andExpect(jsonPath("$.avgGoalsPerMatch").value(closeTo(0.48, 0.001)));
+
+            Mockito.verify(statsKafkaProducer).sendPlayerStats(response);
         }
 
         @Test
@@ -118,6 +126,8 @@ class StatsControllerTest {
                     .andExpect(jsonPath("$", hasSize(2)))
                     .andExpect(jsonPath("$[0].teamId").value(1))
                     .andExpect(jsonPath("$[1].wins").value(20));
+
+            Mockito.verify(statsKafkaProducer).sendTopTeams(List.of(response1, response2), 2025, 5);
         }
     }
 
@@ -139,6 +149,8 @@ class StatsControllerTest {
                     .andExpect(jsonPath("$", hasSize(2)))
                     .andExpect(jsonPath("$[0].firstName").value("Erling"))
                     .andExpect(jsonPath("$[1].goals").value(30));
+
+            Mockito.verify(statsKafkaProducer).sendTopScorers(List.of(response1, response2), null, 2025, 10);
         }
 
         @Test
@@ -153,6 +165,8 @@ class StatsControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$[0].teamId").value(3))
                     .andExpect(jsonPath("$[0].goals").value(18));
+
+            Mockito.verify(statsKafkaProducer).sendTopScorers(List.of(response), 3L, 2024, 5);
         }
     }
 }
