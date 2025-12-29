@@ -15,7 +15,6 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class MatchServiceImpl implements MatchService {
     private final MatchRepository matchRepository;
     private final PlayerRepository playerRepository;
@@ -26,6 +25,7 @@ public class MatchServiceImpl implements MatchService {
     private final MatchMapper mapper;
 
     @Override
+    @Transactional
     public MatchResponse create(MatchCreateRequest request) throws BadRequestException {
         if (request.team1Id().equals(request.team2Id())) {
             throw new IllegalArgumentException("team1Id and team2Id must be different");
@@ -78,6 +78,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    @Transactional
     public MatchResponse patch(Long id, MatchPatchRequest patch) throws BadRequestException {
         Match match = matchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Match not found: " + id));
@@ -128,6 +129,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (!matchRepository.existsById(id)) {
             throw new NotFoundException("Match not found: " + id);

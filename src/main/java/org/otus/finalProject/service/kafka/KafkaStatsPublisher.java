@@ -6,6 +6,7 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 import org.otus.finalProject.dto.stats.PlayerStatResponse;
 import org.otus.finalProject.dto.stats.TeamStatResponse;
 import org.otus.finalProject.dto.stats.TopScorersStatResponse;
+import org.otus.finalProject.service.base.StatsPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +14,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
-public class StatsKafkaProducer {
+public class KafkaStatsPublisher implements StatsPublisher {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public StatsKafkaProducer(KafkaTemplate<String, Object> kafkaTemplate) {
+    public KafkaStatsPublisher(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    @Override
     public void sendTeamStats(TeamStatResponse payload) {
         ProducerRecord<String, Object> record = buildRecord(
                 "statistics.teams.out",
@@ -30,6 +32,7 @@ public class StatsKafkaProducer {
         kafkaTemplate.send(record);
     }
 
+    @Override
     public void sendPlayerStats(PlayerStatResponse payload) {
         ProducerRecord<String, Object> record = buildRecord(
                 "statistics.players.out",
@@ -39,6 +42,7 @@ public class StatsKafkaProducer {
         kafkaTemplate.send(record);
     }
 
+    @Override
     public void sendTopTeams(List<TeamStatResponse> payload, Integer year, Integer limit) {
         String recordKey = "year=" + year + ";limit=" + limit;
 
@@ -50,6 +54,7 @@ public class StatsKafkaProducer {
         kafkaTemplate.send(record);
     }
 
+    @Override
     public void sendTopScorers(List<TopScorersStatResponse> payload, Long teamId, Integer year, Integer limit) {
         String recordKey = "teamId=" + teamId + ";year=" + year + ";limit=" + limit;
 

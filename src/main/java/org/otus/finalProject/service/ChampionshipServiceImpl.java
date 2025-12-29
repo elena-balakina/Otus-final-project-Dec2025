@@ -16,12 +16,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ChampionshipServiceImpl implements ChampionshipService {
     private final ChampionshipRepository repository;
     private final ChampionshipMapper mapper;
 
     @Override
+    @Transactional
     public ChampionshipResponse create(ChampionshipCreateRequest request) {
         if (repository.existsByNameIgnoreCase(request.name())) {
             throw new IllegalArgumentException("Championship with this name " + request.name() + "already exists");
@@ -45,6 +45,7 @@ public class ChampionshipServiceImpl implements ChampionshipService {
     }
 
     @Override
+    @Transactional
     public ChampionshipResponse patch(Long id, ChampionshipPatchRequest patch) {
         Championship championship = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Championship not found: " + id));
@@ -53,6 +54,7 @@ public class ChampionshipServiceImpl implements ChampionshipService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new NotFoundException("Championship not found: " + id);
