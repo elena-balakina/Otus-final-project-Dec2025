@@ -20,7 +20,6 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class GoalServiceImpl implements GoalService {
     private final GoalRepository goalRepository;
     private final MatchRepository matchRepository;
@@ -29,6 +28,7 @@ public class GoalServiceImpl implements GoalService {
     private final GoalMapper mapper;
 
     @Override
+    @Transactional
     public GoalResponse create(GoalCreateRequest request) {
         Match match = matchRepository.findById(request.matchId())
                 .orElseThrow(() -> new NotFoundException("Match not found: " + request.matchId()));
@@ -71,6 +71,7 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
+    @Transactional
     public GoalResponse patch(Long id, GoalPatchRequest patch) {
         Goal goal = goalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Goal not found: " + id));
@@ -99,6 +100,7 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (!goalRepository.existsById(id)) {
             throw new NotFoundException("Goal not found: " + id);

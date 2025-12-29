@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final CoachRepository coachRepository;
@@ -31,6 +30,7 @@ public class TeamServiceImpl implements TeamService {
     private final TeamMapper mapper;
 
     @Override
+    @Transactional
     public TeamResponse create(TeamCreateRequest request) {
         Team team = mapper.toEntity(request);
         Team saved = teamRepository.save(team);
@@ -55,6 +55,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public TeamResponse patch(Long id, TeamPatchRequest patch) {
         Team team = teamRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Team not found: " + id));
@@ -69,6 +70,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Team team = teamRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Team not found: " + id));

@@ -18,7 +18,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository;
     private final TeamRepository teamRepository;
@@ -37,6 +36,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PlayerResponse> findAll() {
         return playerRepository.findAll().stream()
                 .map(mapper::toResponse)
@@ -44,6 +44,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PlayerResponse findById(Long id) {
         Player p = playerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Player not found: " + id));

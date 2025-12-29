@@ -16,12 +16,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CoachServiceImpl implements CoachService {
     private final CoachRepository repository;
     private final CoachMapper mapper;
 
     @Override
+    @Transactional
     public CoachResponse create(CoachCreateRequest request) {
         Coach saved = repository.save(mapper.toEntity(request));
         return mapper.toResponse(saved);
@@ -42,6 +42,7 @@ public class CoachServiceImpl implements CoachService {
     }
 
     @Override
+    @Transactional
     public CoachResponse patch(Long id, CoachPatchRequest patch) {
         Coach coach = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Coach not found: " + id));
@@ -50,6 +51,7 @@ public class CoachServiceImpl implements CoachService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new NotFoundException("Coach not found: " + id);
